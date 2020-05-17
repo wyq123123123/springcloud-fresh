@@ -1,0 +1,40 @@
+server:
+   port: 9999
+
+spring:
+   application:
+      name: fresh-zuul
+         
+eureka:
+   client:
+      serviceUrl:
+         defaultZone: http://navy:123456@127.0.0.1:6868/eureka
+
+zuul:
+   max:
+      host:
+         connections: 500
+   host:
+      maxTotalConnections: 200 # 最大连接数，默认值200
+      maxPerRouteConnections: 20  #每个路由的最大连接数，默认为20
+      socket-timeout-millis: 60000
+      connect-timeout-millis: 60000
+   routes:
+      # 标识你的服务器的名字，可以自定义，一般为了方便建议采用服务器的名字
+      service-rpc-user:
+         # 服务映射路径，目的是为了不暴露你的服务器的IP地址
+         path: /user/**
+         serviceId: fresh-user  # 注册到Eureka Server中的服务器名
+         # zuul在路由的时候,zuul会改写request中的header信息,这个配置就是对哪些header敏感,会过滤这些header,后面这些不过滤 为空说明都不要过滤
+         sensitiveHeaders: "*"
+      
+      service-rpc-goods:
+         path: /view/**
+         serviceId: fresh-goods
+         sensitiveHeaders: "*"
+         
+      service-rpc-order:
+         path: /order/**
+         serviceId: fresh-order
+         sensitiveHeaders: "*"
+      

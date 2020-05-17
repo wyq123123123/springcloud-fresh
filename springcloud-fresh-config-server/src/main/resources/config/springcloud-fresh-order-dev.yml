@@ -7,10 +7,10 @@ spring:
       password: a
       
    http:
-    encoding:
-      force: true
-      charset: UTF-8
-      enabled: true
+      encoding:
+         force: true
+         charset: UTF-8
+         enabled: true
       
    session:
       store-type: redis
@@ -27,8 +27,8 @@ spring:
             
    mail:
       host: smtp.qq.com
-      username: 2860308561@qq.com
-      password: 13487541317zz
+      username: 1293580602@qq.com
+      password: dihpepdwtahlgefh
       port: 465
       protocol: smtp
       properties:
@@ -41,11 +41,11 @@ spring:
 # mybatis配置
 mybatis:
    mapper-locations: mapper/*Mapper.xml
-   type-aliases-package: com.yc.fresh.goods.entity  # 需要扫描的启用别名的类所在的包
+   type-aliases-package: com.yc.fresh.entity  # 需要扫描的启用别名的类所在的包
    
 eureka:
    client:
-      service-url:
+      serviceUrl:
          defaultZone: http://navy:123456@127.0.0.1:6868/eureka
       
    
