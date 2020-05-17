@@ -23,7 +23,7 @@ eureka:
 #      config:
 #         server:
 #            git:
-#               uri: https://github.com/navyzhou/springcloud-fresh.git #配置文件所在的仓库
+#               uri: https://github.com/wyq123123123/springcloud-fresh.git #配置文件所在的仓库
 #               username: 2860308561@qq.com # 登录账号
 #               password: 13487541317zz # 登录密码
 #               default-label: master # 分支

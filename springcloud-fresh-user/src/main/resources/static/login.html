@@ -1,0 +1,164 @@
+<!doctype html>
+<html>
+<head>
+<meta charset="utf-8">
+<title>天天生鲜-登陆</title>
+<link rel="icon" href="images/copylogo.png">
+<link rel="stylesheet" href="css/reset.css">
+<link rel="stylesheet" href="css/login.css">
+</head>
+
+<body>
+<!-- logo区区域 -->
+<div class="login_top">
+	<a href="index.html" class="login_logo"><img src="images/logo02.png"></a>
+</div>
+
+<div id="app">	
+	<!-- 内容区域 -->
+    <div class="login_form_bg">
+    	<div class="login_form_wrap clearfix">
+        	<div class="login_banner fl"></div>
+            <div class="slogn fl">日夜兼程 · 急速送达</div>	
+            <div class="login_form fr">
+                <div class="login_title	clearfix">
+                    <h1 class="fl">用户登陆</h1>
+                    <a href="register.html" class="fl">立即注册</a>
+                </div>
+				<!-- 登录区域 -->
+                <div class="form_input clearfix">
+                    <form>
+						<ul>
+                            <li>
+                                <input type="text" name="nickname" autofocus="autofocus" class="name_input" @blur="checkInfo(0)" v-model="account" placeholder="请输入用户名" id="nickname">
+                                <div class="user_error"><span v-if="status[0]">您输入的账号格式错误...</span></div>
+                            </li>
+                            <li>
+                                <input type="password" name="pwd" class="pwd_input" @blur="checkInfo(1)" v-model="pwd" placeholder="请输入密码" id="pwd">
+                                <div class="pwd_error"><span  v-if="status[1]">密码错误...</span></div>
+                            </li>
+                            <li>
+                            	<div>
+                                	<input type="text" name="yzm" @blur="checkInfo(2)" v-model="code" class="yzm_input" placeholder="请输入验证码">
+                                	<img class="code" src="code/getcode" title="验证码图" onclick="refresh(this)">
+                                </div>
+                                <div class="code_error"><span v-if="status[2]">{{info}}</span></div>
+                            </li>
+                            <li>
+                                <div class="more_input clearfix">
+                                    <input type="checkbox" name="" id="remember">
+                                    <label for="remember">记住用户名</label>
+                                    <a href="#">忘记密码</a>
+                                </div>
+                            </li>
+                            <li>
+                               <input type="button" value="登录" class="submit_input" @click="login">
+                            </li>
+                      	</ul>
+                    </form>
+                </div>
+            </div>
+         </div>
+    </div>
+</div>
+	
+<!-- 版权所有-->
+<div class="footer">
+	<div class="foot_link">
+    	<a href="#">关于我们</a><span> | </span>
+    	<a href="#">联系我们</a><span> | </span>
+    	<a href="#">招聘广告</a><span> | </span>
+        <a href="#">友情链接</a>
+    </div>
+    <p>CopyRight &copy;  2019 衡阳市源辰信息科技有限公司 All Rights Reserverd</p>
+    <p>电话：0734-8355998 湘ICP备16015987号</p>
+</div>
+
+<script type="text/javascript" src="js/jquery-3.4.1.min.js"></script>
+<script type="text/javascript" src="js/vue.js"></script>
+<script type="text/javascript" src="js/axios.js"></script>
+<script type="text/javascript" src="js/qs.js"></script>
+<script>
+//切换验证码
+function refresh(obj){
+	obj.src="code/getcode?"+Math.random();
+}
+
+let app = new Vue({
+	el: "#app",
+	data:{
+		account:"15096098010",
+		pwd:"123321",
+		code: "",
+		status:[false, false, false],
+		info: ""
+	},
+	methods:{
+		checkInfo: function(flag) {
+			let correct = false;
+			if (flag == 0) { // 说明是要校验账号
+				let reg1 = /^1(3|4|5|6|7|8|9)\d{9}$/;
+				let reg2 = /^\w+((-\w+)|(\.\w+))*\@[A-Za-z0-9]+((\.|-)[A-Za-z0-9]+)*\.[A-Za-z0-9]+$/;
+				let reg3 = /^[\u4e00-\u9fff\w]{2,16}$/;
+				if (!(reg1.test(this.account) || reg2.test(this.account) || reg3.test(this.account))) {
+					correct = false;
+				} else {
+					correct = true;
+				}
+				
+			} else if (flag == 1) { // 说明是校验密码
+				let reg = /^[\w@!#$%&,\.]{6,16}$/;
+				if (reg.test(this.pwd)) {
+					correct = true;
+				} else {
+					correct = false;
+				}
+			} else if (flag == 2) { // 说是检验验证码
+				let reg = /^\w{4}$/;
+				if (reg.test(this.code)) {
+					correct = true;
+				} else {
+					this.info = "验证码错误...";
+					correct = false;
+				}
+			}
+			
+			if (correct) { // 说明是满足校验条件
+				Vue.set(app.status, flag, false);
+			} else {
+				app.$set(app.status, flag, true);
+			}
+		},
+		login: function(){
+			this.checkInfo(0);
+			this.checkInfo(1);
+			this.checkInfo(2);
+			
+			if ($.inArray(true, this.status) == -1) { // 说明数组中么有true值，即所有的检验都已经通过
+				Vue.set(app.status, 2, false); 
+				// 发送请求
+				axios.post("member/login", qs.stringify({nickName:this.account, pwd:this.pwd, realName:this.code})).then(result => { // function(result){}
+					if (result.data.code == 501) {
+						this.info = "验证码错误...";
+						Vue.set(app.status, 2, true); 
+					} else if (result.data.code == 200) {
+						// 现获取是从哪个页面跳出来的
+						let temp = document.referrer; // 获取来源路径
+						// 如果是直接访问的登录界面或者是从注册界面来的，那么默认访问首页
+						if (temp == "" || temp == undefined || temp.indexOf("register.html")) {
+							location.href="/view/index.html";
+						} else {
+							history.go(-1);
+						}
+					} else {
+						this.info = "账户或密码错误...";
+						Vue.set(app.status, 2, true); 
+					}
+				})
+			} 
+		}
+	}
+})
+</script>
+</body>
+</html>
