@@ -1,0 +1,10 @@
+1，在github官网创建一个项目
+2，在盘符里创建一个文件夹，把要发布的eclipse中的项目cope到文件夹中
+3，在盘符文件夹中右击选择git bash here进入
+4，输入git config --global user.email "2860308561@qq.com"  //你在GitHub的邮箱
+     和git config --global user.namel "wyq123123123"  //在GitHub的用户名
+5，输入git init
+6，输入 git add . //后面有一个点，且点不能紧挨add
+7，git commit -m "xxx"//双引号中写项目的注释，说明是什么
+8，git remote add origin https://github.com/wyq123123123/springcloud-fresh.git  //此为发布地址，在GitHub的哪里
+9，git push -u origin master
